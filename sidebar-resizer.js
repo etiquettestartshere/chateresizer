@@ -161,6 +161,7 @@ function _assignVerticalResizer(chatform) {
 }
 
 Hooks.on("renderChatLog", function(chat) {
+  console.warn(chat.options);
   const sidebar = ui.sidebar.element[0];
   const chatform = $(ui.chat.element[0]).find("#chat-form")[0];
   if (!chatform) return;
