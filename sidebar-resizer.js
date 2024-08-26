@@ -2,7 +2,7 @@ const _sdbDebouncedReload = foundry.utils.debounce(() => window.location.reload(
 const _sdbFloatingDefaultSize = 2.5;
 
 Hooks.once('init', function() {
-  game.settings.register('sidebar-resizer', 'enableChatFormatting', {
+  game.settings.register('chatresizer', 'enableChatFormatting', {
     name: 'Enable Chat Formatting (EXPERIMENTAL)',
     hint: 'Enhances the chat box with text formatting tools.',
     scope: 'world',
@@ -12,7 +12,7 @@ Hooks.once('init', function() {
     onChange: _sdbDebouncedReload
   });
 
-  game.settings.register('sidebar-resizer', 'chatFormattingSendMod', {
+  game.settings.register('chatresizer', 'chatFormattingSendMod', {
     name: 'Formatted Chat Key Modifier',
     hint: 'Key combination to press with Enter before sending a message, when chat formatting is enabled',
     scope: 'world',
@@ -36,7 +36,7 @@ function _getImportantStr() {
 }
 
 function _createTinyMceChat(selector) {
-  const modKey = game.settings.get('sidebar-resizer', 'chatFormattingSendMod')
+  const modKey = game.settings.get('chatresizer', 'chatFormattingSendMod')
   tinyMCE.init({
     target: selector,
     branding: false,
@@ -105,7 +105,7 @@ function _assignResizer(sidebar) {
 
   // On mouseup remove listeners & save final size
   function stopResize(e) {
-    window.localStorage.setItem('sidebar-resizer-init-size', sidebar.offsetWidth);
+    window.localStorage.setItem('chatresizer-init-size', sidebar.offsetWidth);
     window.removeEventListener('mousemove', resize, false);
     window.removeEventListener('mouseup', stopResize, false);
   }
@@ -123,7 +123,7 @@ function _assignVerticalResizer(chatform) {
   const resizer = document.createElement('div');
   resizer.style.width = '100%';
   resizer.style.height = '4px';
-  if (game.settings.get('sidebar-resizer', 'enableChatFormatting'))
+  if (game.settings.get('chatresizer', 'enableChatFormatting'))
     resizer.style.position = 'relative';
   else
     resizer.style.position = 'fixed';
@@ -168,7 +168,7 @@ Hooks.on("renderChatLog", function(chat) {
   _assignVerticalResizer(chatform);
   chat.options.resizable = true;
   chat.options.height = parseInt($("#board").css('height')) / _sdbFloatingDefaultSize;
-  const lastSidebarSize = window.localStorage.getItem('sidebar-resizer-init-size');
+  const lastSidebarSize = window.localStorage.getItem('chatresizer-init-size');
   if (lastSidebarSize && Number.isInteger(+lastSidebarSize)) chat.options.width = parseInt(lastSidebarSize);
 });
 
@@ -177,57 +177,57 @@ Hooks.once('ready', function () {
   // Enable Chat popout Resize
   return
   if (game.modules.get('lib-wrapper')?.active) {
-    libWrapper.register('sidebar-resizer', 'ChatLog.defaultOptions', function (wrapped, ...args) {
+    libWrapper.register('chatresizer', 'ChatLog.defaultOptions', function (wrapped, ...args) {
       let result = wrapped(...args);
       result.resizable = true;
       result.height = parseInt($("#board").css('height')) / _sdbFloatingDefaultSize;
-      const lastSidebarSize = window.localStorage.getItem('sidebar-resizer-init-size');
+      const lastSidebarSize = window.localStorage.getItem('chatresizer-init-size');
       if (lastSidebarSize && Number.isInteger(+lastSidebarSize)) result.width = parseInt(lastSidebarSize);
       return result;
     }, 'WRAPPER');
-    libWrapper.register('sidebar-resizer', 'CombatTracker.defaultOptions', function (wrapped, ...args) {
+    libWrapper.register('chatresizer', 'CombatTracker.defaultOptions', function (wrapped, ...args) {
       let result = wrapped(...args);
       result.resizable = true;
       result.height = parseInt($("#board").css('height')) / _sdbFloatingDefaultSize;
       return result;
     }, 'WRAPPER');
-    libWrapper.register('sidebar-resizer', 'SceneDirectory.defaultOptions', function (wrapped, ...args) {
+    libWrapper.register('chatresizer', 'SceneDirectory.defaultOptions', function (wrapped, ...args) {
       let result = wrapped(...args);
       result.resizable = true;
       result.height = parseInt($("#board").css('height')) / _sdbFloatingDefaultSize;
       return result;
     }, 'WRAPPER');
-    libWrapper.register('sidebar-resizer', 'ActorDirectory.defaultOptions', function (wrapped, ...args) {
+    libWrapper.register('chatresizer', 'ActorDirectory.defaultOptions', function (wrapped, ...args) {
       let result = wrapped(...args);
       result.resizable = true;
       result.height = parseInt($("#board").css('height')) / _sdbFloatingDefaultSize;
       return result;
     }, 'WRAPPER');
-    libWrapper.register('sidebar-resizer', 'ItemDirectory.defaultOptions', function (wrapped, ...args) {
+    libWrapper.register('chatresizer', 'ItemDirectory.defaultOptions', function (wrapped, ...args) {
       let result = wrapped(...args);
       result.resizable = true;
       result.height = parseInt($("#board").css('height')) / _sdbFloatingDefaultSize;
       return result;
     }, 'WRAPPER');
-    libWrapper.register('sidebar-resizer', 'RollTableDirectory.defaultOptions', function (wrapped, ...args) {
+    libWrapper.register('chatresizer', 'RollTableDirectory.defaultOptions', function (wrapped, ...args) {
       let result = wrapped(...args);
       result.resizable = true;
       result.height = parseInt($("#board").css('height')) / _sdbFloatingDefaultSize;
       return result;
     }, 'WRAPPER');
-    libWrapper.register('sidebar-resizer', 'CardsDirectory.defaultOptions', function (wrapped, ...args) {
+    libWrapper.register('chatresizer', 'CardsDirectory.defaultOptions', function (wrapped, ...args) {
       let result = wrapped(...args);
       result.resizable = true;
       result.height = parseInt($("#board").css('height')) / _sdbFloatingDefaultSize;
       return result;
     }, 'WRAPPER');
-    libWrapper.register('sidebar-resizer', 'PlaylistDirectory.defaultOptions', function (wrapped, ...args) {
+    libWrapper.register('chatresizer', 'PlaylistDirectory.defaultOptions', function (wrapped, ...args) {
       let result = wrapped(...args);
       result.resizable = true;
       result.height = parseInt($("#board").css('height')) / _sdbFloatingDefaultSize;
       return result;
     }, 'WRAPPER');
-    libWrapper.register('sidebar-resizer', 'CompendiumDirectory.defaultOptions', function (wrapped, ...args) {
+    libWrapper.register('chatresizer', 'CompendiumDirectory.defaultOptions', function (wrapped, ...args) {
       let result = wrapped(...args);
       result.resizable = true;
       result.height = parseInt($("#board").css('height')) / _sdbFloatingDefaultSize;
@@ -240,7 +240,7 @@ Hooks.once('ready', function () {
 */
 
 Hooks.once('renderSidebarTab', function() {
-  const lastSidebarSize = window.localStorage.getItem('sidebar-resizer-init-size');
+  const lastSidebarSize = window.localStorage.getItem('chatresizer-init-size');
   if (!lastSidebarSize) return;
   if (Number.isInteger(+lastSidebarSize)) {
     const sidebar = document.querySelector('#sidebar');
@@ -252,7 +252,7 @@ Hooks.on('renderChatLog', function (chat, div) {
   if (chat.popOut) {
     const element = div.find("#chat-message")[0];
     element.id = '__temp'; // Hack for popout duplicate element id
-    if (game.settings.get('sidebar-resizer', 'enableChatFormatting'))
+    if (game.settings.get('chatresizer', 'enableChatFormatting'))
       _createTinyMceChat(div.find('textarea')[0]);
     element.id = 'chat-message';
   }
@@ -267,13 +267,13 @@ Hooks.on('renderChatLog', function (chat, div) {
 });
 
 Hooks.once('renderChatLog', function(chat, div) {
-  if (game.settings.get('sidebar-resizer', 'enableChatFormatting')) {
+  if (game.settings.get('chatresizer', 'enableChatFormatting')) {
     _createTinyMceChat(div.find('textarea')[0]);
   }
 });
 
 Hooks.on('collapseSidebar', function(_, isCollapsing) {
-  const lastSidebarSize = window.localStorage.getItem('sidebar-resizer-init-size');
+  const lastSidebarSize = window.localStorage.getItem('chatresizer-init-size');
   if (!lastSidebarSize || isCollapsing) return;
   if (Number.isInteger(+lastSidebarSize)) {
     const sidebar = document.querySelector('#sidebar');
