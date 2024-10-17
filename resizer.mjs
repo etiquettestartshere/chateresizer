@@ -1,5 +1,6 @@
 export class Resizer {
 
+  // TODO stop using localStorage and use an invisible setting (config: false)
   static init() {
     Hooks.once('renderSidebarTab', Resizer._sideBarSize);
     Hooks.on('renderChatLog', Resizer._sideBarLog);
@@ -12,22 +13,28 @@ export class Resizer {
     const lastSidebarSize = window.localStorage.getItem('chatresizer.sidebar-init-size');
     if (!lastSidebarSize) return;
     if (Number.isInteger(+lastSidebarSize)) {
+
+      // TODO Find new class rather than ID
       const sidebar = document.querySelector('#sidebar');
-      sidebar.setAttribute('style', `width: ${lastSidebarSize}px${Resizer._getImportantStr()}`);
+      sidebar.setAttribute('style', `width: ${lastSidebarSize}px`);
     }
   }
 
   // Handle preserving sidebar side on sidebar collapse
-  static _collapseSidebar(_, isCollapsing) {
+  static _collapseSidebar(sidebar, isCollapsing) {
     const lastSidebarSize = window.localStorage.getItem('chatresizer.sidebar-init-size');
     if (!lastSidebarSize || isCollapsing) return;
     if (Number.isInteger(+lastSidebarSize)) {
+
+      // TODO Find new class rather than ID
       const sidebar = document.querySelector('#sidebar');
-      sidebar.setAttribute('style', `width: ${lastSidebarSize}px${Resizer._getImportantStr()}`);
+      sidebar.setAttribute('style', `width: ${lastSidebarSize}px`);
     }
   }
 
   // Handle sidebar chatlog resizing
+  // TODO stop destructuring, foundry.applications.instances
+  // TODO update first param
   static _sideBarLog(chat, [html]) {
     if (chat.popOut) return;
     const sidebar = ui.sidebar.element[0];
@@ -46,7 +53,9 @@ export class Resizer {
     };
   }
 
-  // Handle pop out chat form
+  // Handle pop out chat resizing and pop out chat form resizing
+  // TODO stop destructuring
+  // TODO update first param
   static _popOutLog(chat, [html]) {
     if (!chat.popOut) return;
     const element = html.querySelector('textarea');
@@ -62,10 +71,10 @@ export class Resizer {
     }
   }
 
+  // Perform sidebar resizing
   static _assignResizer(sidebar) {
     let minSize = 300;
     let mouseStart, startSize, newSize;
-    let isImportant = Resizer._getImportantStr();
 
     // Create a resizer handle
     const resizer = document.createElement('div');
@@ -75,6 +84,8 @@ export class Resizer {
     resizer.style.top = '0';
     resizer.style.cursor = 'col-resize';
     sidebar.appendChild(resizer);
+
+    // TODO         foundry.applications.instances              foundry.applications.sidebar.tabs.ChatLog
     for (const v of Object.values(ui.windows)) if (v instanceof ChatLog) return v.element[0].appendChild(resizer);
 
     // Listen for mousedown on resizer
@@ -82,6 +93,9 @@ export class Resizer {
 
     // React to user resizing
     function startResize(e) {
+
+      // TODO foundry.applications.instances  
+      // Make sure _collapsed is not true private
       if (ui.sidebar._collapsed) return;
       mouseStart = e.clientX;
       startSize = sidebar.offsetWidth;
@@ -93,9 +107,9 @@ export class Resizer {
     function resize(e) {
       newSize = Math.round(startSize + mouseStart - e.clientX);
       if (newSize >= minSize) {
-        sidebar.setAttribute('style', `width: ${newSize}px${isImportant}`);
+        sidebar.setAttribute('style', `width: ${newSize}px`);
       } else {
-        sidebar.setAttribute('style', `width: ${minSize}px${isImportant}`);
+        sidebar.setAttribute('style', `width: ${minSize}px`);
       }
     }
 
@@ -107,13 +121,10 @@ export class Resizer {
     }
   }
 
+  // Perform chat form resizing
   static _assignVerticalResizer(chatform) {
     let minSize = 100;
     let mouseStart, startSize, newSize;
-    let isImportant = '';
-
-    if (game.modules.get('dnd-ui')?.active || game.modules.get('pathfinder-ui-legacy')?.active)
-      isImportant = ' !important';
 
     // Create a resizer handle
     const resizer = document.createElement('div');
@@ -126,7 +137,7 @@ export class Resizer {
     // Listen for mousedown on resizer
     resizer.addEventListener('mousedown', startResize, false);
 
-    // React to user resizingR
+    // React to user resizing
     function startResize(e) {
       mouseStart = e.clientY;
       startSize = chatform.offsetHeight;
@@ -138,9 +149,9 @@ export class Resizer {
     function resize(e) {
       newSize = Math.round(startSize + mouseStart - e.clientY);
       if (newSize >= minSize) {
-        chatform.setAttribute('style', `flex: 0 0 ${newSize}px${isImportant}`);
+        chatform.setAttribute('style', `flex: 0 0 ${newSize}px`);
       } else {
-        chatform.setAttribute('style', `flex: 0 0 ${minSize}px${isImportant}`);
+        chatform.setAttribute('style', `flex: 0 0 ${minSize}px`);
       }
     }
 
@@ -151,13 +162,6 @@ export class Resizer {
       window.removeEventListener('mousemove', resize, false);
       window.removeEventListener('mouseup', stopResize, false);
     }
-  }
-
-  static _getImportantStr() {
-    if (game.modules.get('dnd-ui')?.active || game.modules.get('pathfinder-ui-legacy')?.active)
-      return ' !important';
-    else
-      return '';
   }
 }
 
