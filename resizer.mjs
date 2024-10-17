@@ -9,13 +9,15 @@ export class Resizer {
     Hooks.on('collapseSidebar', Resizer._collapseSidebar);
   }
 
+  // Set sidebar size on first render
   static _sideBarSize() {
-    const lastSidebarSize = window.localStorage.getItem('chatresizer-init-size');
+    const lastSidebarSize = window.localStorage.getItem('chatresizer.sidebar-init-size');
     if (!lastSidebarSize) return;
   }
 
+  // Handle preserving sidebar side on sidebar collapse
   static _collapseSidebar(_, isCollapsing) {
-    const lastSidebarSize = window.localStorage.getItem('chatresizer-init-size');
+    const lastSidebarSize = window.localStorage.getItem('chatresizer.sidebar-init-size');
     if (!lastSidebarSize || isCollapsing) return;
     if (Number.isInteger(+lastSidebarSize)) {
       const sidebar = document.querySelector('#sidebar');
@@ -23,16 +25,38 @@ export class Resizer {
     }
   }
 
-  static _resizeChatLog(chat) {
+  static _resizeChatLog(chat, [html]) {
     const sidebar = ui.sidebar.element[0];
-    const chatform = $(ui.chat.element[0]).find("#chat-form")[0];
+    //const chatform = $(ui.chat.element[0]).find("#chat-form")[0];
+    const chatform = ui.chat.element[0].querySelector('form');
     if (!chatform) return;
     Resizer._assignResizer(sidebar);
     Resizer._assignVerticalResizer(chatform);
     chat.options.resizable = true;
-    chat.options.height = parseInt($("#board").css('height')) / _sdbFloatingDefaultSize;
-    const lastSidebarSize = window.localStorage.getItem('chatresizer-init-size');
+    chat.options.height = "0px"
+    //parseInt(document.querySelector('canvas#board'));
+    //chat.options.height = parseInt($("#board").css('height')) / _sdbFloatingDefaultSize;
+    const lastSidebarSize = window.localStorage.getItem('chatresizer.sidebar-init-size');
     if (lastSidebarSize && Number.isInteger(+lastSidebarSize)) chat.options.width = parseInt(lastSidebarSize);
+  }
+
+  // Handle pop out chat form
+  static _chatForm(chat, [html]) {
+    if (!chat.popOut) return;
+    //const element = div.find("#chat-message")[0];
+    const element = html.querySelector('textarea');
+    element.id = '__temp'; // Hack for popout duplicate element id
+    const chatform = html.querySelector('form');
+    const lastChatformSize = window.localStorage.getItem('chatresizer.chatform-init-size');
+    if (!lastChatformSize) return;
+    if (Number.isInteger(+lastChatformSize)) {
+      chatform.setAttribute('style', `flex: 0 0 ${lastChatformSize}px`);
+    }
+    if (!chatform) return;
+    Resizer._assignVerticalResizer(chatform);
+
+    //const chatform = div.find("#chat-form")[0];
+    //const chatform = html.querySelector('form');
   }
 
   static _assignResizer(sidebar) {
@@ -47,11 +71,8 @@ export class Resizer {
     resizer.style.position = 'absolute';
     resizer.style.top = '0';
     resizer.style.cursor = 'col-resize';
-    resizer.classList.add("fixme");
     sidebar.appendChild(resizer);
-    for (const v of Object.values(ui.windows)) if (v instanceof ChatLog) {
-       return v.element[0].appendChild(resizer);
-    }  
+    for (const v of Object.values(ui.windows)) if (v instanceof ChatLog) return v.element[0].appendChild(resizer);
 
     // Listen for mousedown on resizer
     resizer.addEventListener('mousedown', startResize, false);
@@ -77,7 +98,7 @@ export class Resizer {
 
     // On mouseup remove listeners & save final size
     function stopResize(e) {
-      window.localStorage.setItem('chatresizer-init-size', sidebar.offsetWidth);
+      window.localStorage.setItem('chatresizer.sidebar-init-size', sidebar.offsetWidth);
       window.removeEventListener('mousemove', resize, false);
       window.removeEventListener('mouseup', stopResize, false);
     }
@@ -123,25 +144,10 @@ export class Resizer {
 
     // On mouseup remove listeners & save final size
     function stopResize(e) {
-      window.localStorage.setItem('chatform-resizer-init-size', chatform.offsetHeight);
+      window.localStorage.setItem('chatresizer.chatform-init-size', chatform.offsetHeight);
       window.removeEventListener('mousemove', resize, false);
       window.removeEventListener('mouseup', stopResize, false);
     }
-  }
-
-  static _chatForm(chat, div) {
-    if (chat.popOut) {
-      const element = div.find("#chat-message")[0];
-      element.id = '__temp'; // Hack for popout duplicate element id
-    }
-    const chatform = div.find("#chat-form")[0];
-    if (!chatform) return;
-    const lastChatformSize = window.localStorage.getItem('chatform-resizer-init-size');
-    if (!lastChatformSize) return;
-    if (Number.isInteger(+lastChatformSize)) {
-      chatform.setAttribute('style', `flex: 0 0 ${lastChatformSize}px`);
-    }
-    Resizer._assignVerticalResizer(chatform);
   }
 
   static _getImportantStr() {
