@@ -1,7 +1,7 @@
 {
   "id": "chatresizer",
   "title": "Chat Resizer",
-  "description": "Resize chat (and maybe some windows)",
+  "description": "Resize the sidebar and chat pop out",
   "esmodules": ["resizer.mjs"],
   "authors": [
     {
@@ -11,9 +11,15 @@
     },
     {
       "name": "Vance Cole"
+    },
+    {
+      "name": "alakshana",
+      "discord": "alakshana",
+      "url": "https://github.com/etiquettestartshere",
+      "flags": {}
     }
   ],
-  "version": "0.8.1",
+  "version": "12.0.0",
   "minimumCoreVersion": "12",
   "compatibleCoreVersion": "12",
   "compatibility": {

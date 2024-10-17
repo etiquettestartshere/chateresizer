@@ -1,5 +1,3 @@
-//const _sdbFloatingDefaultSize = 2.5;
-
 export class Resizer {
 
   static init() {
@@ -7,9 +5,6 @@ export class Resizer {
     Hooks.on('renderChatLog', Resizer._sideBarLog);
     Hooks.on('renderChatLog', Resizer._popOutLog);
     Hooks.on('collapseSidebar', Resizer._collapseSidebar);
-
-    //Hooks.on('renderChatLog', Resizer._resizePopOut); xx
-    //Hooks.on('renderChatLog', Resizer._popOutSize);
   }
 
   // Set sidebar size on first render
@@ -21,17 +16,6 @@ export class Resizer {
       sidebar.setAttribute('style', `width: ${lastSidebarSize}px${Resizer._getImportantStr()}`);
     }
   }
-
-  // Set popOut size on first render xx
-  /*
-  static _popOutSize(chat, [html]) {
-    const lastSidebarSize = window.localStorage.getItem('chatresizer.popout-init-size');
-    if (!lastSidebarSize) return;
-    if (Number.isInteger(+lastSidebarSize)) {
-      const sidebar = html;
-      sidebar.setAttribute('style', `width: ${lastSidebarSize}px${Resizer._getImportantStr()}`);
-    }
-  }*/
 
   // Handle preserving sidebar side on sidebar collapse
   static _collapseSidebar(_, isCollapsing) {
@@ -47,15 +31,12 @@ export class Resizer {
   static _sideBarLog(chat, [html]) {
     if (chat.popOut) return;
     const sidebar = ui.sidebar.element[0];
-    //const chatform = $(ui.chat.element[0]).find("#chat-form")[0];
     const chatform = ui.chat.element[0].querySelector('form');
     if (!chatform) return;
     Resizer._assignResizer(sidebar);
     Resizer._assignVerticalResizer(chatform);
     chat.options.resizable = true;
     chat.options.height = 0;
-    //parseInt(document.querySelector('canvas#board'));
-    //chat.options.height = parseInt($("#board").css('height')) / _sdbFloatingDefaultSize;
     const lastSidebarSize = window.localStorage.getItem('chatresizer.sidebar-init-size');
     if (lastSidebarSize && Number.isInteger(+lastSidebarSize)) chat.options.width = parseInt(lastSidebarSize);
     const lastChatformSize = window.localStorage.getItem('chatresizer.chatform-sidebar-init-size');
@@ -68,9 +49,8 @@ export class Resizer {
   // Handle pop out chat form
   static _popOutLog(chat, [html]) {
     if (!chat.popOut) return;
-    //const element = div.find("#chat-message")[0];
     const element = html.querySelector('textarea');
-    element.id = '__temp'; // Hack for popout duplicate element id
+    //element.id = '__temp'; // Hack for popout duplicate element id
     element.classList.add("popout");
     const chatform = html.querySelector('form');
     if (!chatform) return;
@@ -80,8 +60,6 @@ export class Resizer {
     if (Number.isInteger(+lastChatformSize)) {
       chatform.setAttribute('style', `flex: 0 0 ${lastChatformSize}px`);
     }
-    //const chatform = div.find("#chat-form")[0];
-    //const chatform = html.querySelector('form');
   }
 
   static _assignResizer(sidebar) {
@@ -150,7 +128,6 @@ export class Resizer {
 
     // React to user resizingR
     function startResize(e) {
-      //if (ui.sidebar._collapsed) return;
       mouseStart = e.clientY;
       startSize = chatform.offsetHeight;
       window.addEventListener('mousemove', resize, false);
