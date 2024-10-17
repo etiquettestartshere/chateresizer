@@ -13,12 +13,12 @@
       "name": "Vance Cole"
     }
   ],
-  "version": "0.8.0",
-  "minimumCoreVersion": "0.8.9",
+  "version": "0.8.1",
+  "minimumCoreVersion": "12",
   "compatibleCoreVersion": "12",
   "compatibility": {
-    "minimum": "0.8.9",
-    "verified": "12.325",
+    "minimum": "12",
+    "verified": "12.331",
     "maximum": "12"
   }
 }
