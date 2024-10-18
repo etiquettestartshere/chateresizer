@@ -86,7 +86,7 @@ export class Resizer {
   // Perform sidebar resizing
   static _assignResizer(sidebar) {
     let minSize = 300;
-    let maxSize = 560;
+    let maxSize = 570;
     let mouseStart, startSize, newSize;
 
     // Create a resizer handle
@@ -152,7 +152,7 @@ export class Resizer {
     resizer.style.position = 'fixed';
     resizer.style.cursor = 'row-resize';*/
     resizer.style.width = '100%'
-    resizer.style.height = '4px';
+    resizer.style.height = '6px';
     resizer.style.position = 'absolute';
     resizer.style.cursor = 'row-resize';
     resizer.classList.add("FIXME");
