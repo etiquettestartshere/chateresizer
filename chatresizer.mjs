@@ -9,10 +9,15 @@ export class Resizer {
   }
 
   // Set sidebar size on first render
-  static _sideBarSize() {
-    return;
+  static _sideBarSize(sidebar, html) {
     const lastSidebarSize = window.localStorage.getItem('chatresizer.sidebar-init-size');
-    if (!lastSidebarSize) return;
+    if (!lastSidebarSize) return stl.setProperty('--chatresizer-sidebar-init-size', `300px`);
+    let updatesize;
+    if (Number.isInteger(+lastSidebarSize) && lastSidebarSize <= 560) updatesize = lastSidebarSize;
+    else updatesize = 560;
+    const stl = document.querySelector(":root").style;
+    stl.setProperty('--chatresizer-sidebar-init-size', `${updatesize}px`);
+    return;
     if (Number.isInteger(+lastSidebarSize)) {
 
       // TODO Find new class rather than ID
@@ -23,6 +28,7 @@ export class Resizer {
 
   // Handle preserving sidebar side on sidebar collapse
   static _collapseSidebar(sidebar, isCollapsing) {
+    sidebar.element.querySelector('#sidebar-content').removeAttribute('style');
     return;
     const lastSidebarSize = window.localStorage.getItem('chatresizer.sidebar-init-size');
     if (!lastSidebarSize || isCollapsing) return;
@@ -42,12 +48,13 @@ export class Resizer {
     const sidebar = ui.sidebar.element.querySelector('#sidebar-content');
     const chatform = ui.chat.element.querySelector('form textarea');
     if (!chatform) return;
-    //Resizer._assignResizer(sidebar);
+    Resizer._assignResizer(sidebar);
     Resizer._assignVerticalResizer(chatform);
     chat.options.window.resizable = true;
-    //chat.options.position.height = 0;
-    //const lastSidebarSize = window.localStorage.getItem('chatresizer.sidebar-init-size');
-    //if (lastSidebarSize && Number.isInteger(+lastSidebarSize)) chat.options.position.width = parseInt(lastSidebarSize);
+    chat.options.position.height = 0;
+    /*
+    const lastSidebarSize = window.localStorage.getItem('chatresizer.sidebar-init-size');
+    if (lastSidebarSize && Number.isInteger(+lastSidebarSize)) chat.options.position.width = parseInt(lastSidebarSize);*/
     const lastChatformSize = window.localStorage.getItem('chatresizer.chatform-sidebar-init-size');
     if (!lastChatformSize) return;
     if (Number.isInteger(+lastChatformSize)) {
@@ -79,6 +86,7 @@ export class Resizer {
   // Perform sidebar resizing
   static _assignResizer(sidebar) {
     let minSize = 300;
+    let maxSize = 560;
     let mouseStart, startSize, newSize;
 
     // Create a resizer handle
@@ -100,8 +108,7 @@ export class Resizer {
     function startResize(e) {
 
       // TODO foundry.applications.instances  
-      // Make sure _collapsed is not true private
-      if (ui.sidebar._collapsed) return;
+      if (!ui.sidebar.expanded) return;
       mouseStart = e.clientX;
       startSize = sidebar.offsetWidth;
       window.addEventListener('mousemove', resize, false);
@@ -111,16 +118,22 @@ export class Resizer {
     // Perform the resize operation
     function resize(e) {
       newSize = Math.round(startSize + mouseStart - e.clientX);
-      if (newSize >= minSize) {
+      if (newSize >= minSize && newSize < maxSize) {
         sidebar.setAttribute('style', `width: ${newSize}px`);
-      } else {
+      } else if (newSize < minSize && newSize < maxSize) {
         sidebar.setAttribute('style', `width: ${minSize}px`);
-      }
+      } else sidebar.setAttribute('style', `width: ${maxSize}px`);
     }
 
     // On mouseup remove listeners & save final size
     function stopResize(e) {
       window.localStorage.setItem('chatresizer.sidebar-init-size', sidebar.offsetWidth);
+      const stl = document.querySelector(":root").style;
+      const lastSidebarSize = window.localStorage.getItem('chatresizer.sidebar-init-size');
+      let updatesize;
+      if (Number.isInteger(+lastSidebarSize) && lastSidebarSize <= 560) updatesize = lastSidebarSize;
+      else updatesize = 560;
+      stl.setProperty('--chatresizer-sidebar-init-size', `${updatesize}px`);
       window.removeEventListener('mousemove', resize, false);
       window.removeEventListener('mouseup', stopResize, false);
     }

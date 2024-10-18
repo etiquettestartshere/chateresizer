@@ -4,11 +4,22 @@
   min-width: 300px !important;
 }
 
+#sidebar-content,
 #sidebar-content.expanded {
- 
+  max-width: 600px !important;
 }
 
-.chat-sidebar .chat-form {
-  gap: 2px;
-  padding: 3px;
+#sidebar-content.expanded {
+  width: var(--chatresizer-sidebar-init-size);
+}
+
+.chat-sidebar {
+  .chat-form {
+    gap: 2px;
+    padding: 3px;
+  }
+
+  .chat-log.scrolled {
+    mask-image: unset;
+  }
 }
