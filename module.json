@@ -2,7 +2,9 @@
   "id": "chatresizer",
   "title": "Chat Resizer",
   "description": "Resize the sidebar and chat pop out",
-  "esmodules": ["resizer.mjs"],
+  "esmodules": ["chatresizer.mjs"],
+  "styles": ["styles/chatresizer.css"],
+  "flags": {"hotReload": {"extensions": ["css"], "paths": ["styles/chatresizer.css"]}}, 
   "authors": [
     {
       "name": "Saif Addin Ellafi",
@@ -21,10 +23,10 @@
   ],
   "version": "12.0.0",
   "minimumCoreVersion": "12",
-  "compatibleCoreVersion": "12",
+  "compatibleCoreVersion": "13",
   "compatibility": {
     "minimum": "12",
     "verified": "12.331",
-    "maximum": "12"
+    "maximum": "13"
   }
 }

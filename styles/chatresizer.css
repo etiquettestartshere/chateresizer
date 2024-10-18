@@ -1,0 +1,14 @@
+#chat-popout {
+  width: 300px;
+  max-width: 900px !important;
+  min-width: 300px !important;
+}
+
+#sidebar-content.expanded {
+ 
+}
+
+.chat-sidebar .chat-form {
+  gap: 2px;
+  padding: 3px;
+}
