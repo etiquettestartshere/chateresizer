@@ -13,6 +13,8 @@
   width: var(--chatresizer-sidebar-init-size);
 }
 
+/* TOMOVE */
+
 .chat-sidebar {
   .chat-form {
     gap: 2px;
@@ -22,4 +24,9 @@
   .chat-log.scrolled {
     mask-image: unset;
   }
+}
+
+#pause.paused {
+  display: flex;
+  animation: unset;
 }

@@ -14,7 +14,7 @@ export class Resizer {
     if (!lastSidebarSize) return stl.setProperty('--chatresizer-sidebar-init-size', `300px`);
     let updatesize;
     if (Number.isInteger(+lastSidebarSize) && lastSidebarSize <= 560) updatesize = lastSidebarSize;
-    else updatesize = 560;
+    else updatesize = 570;
     const stl = document.querySelector(":root").style;
     stl.setProperty('--chatresizer-sidebar-init-size', `${updatesize}px`);
     return;
@@ -132,7 +132,7 @@ export class Resizer {
       const lastSidebarSize = window.localStorage.getItem('chatresizer.sidebar-init-size');
       let updatesize;
       if (Number.isInteger(+lastSidebarSize) && lastSidebarSize <= 560) updatesize = lastSidebarSize;
-      else updatesize = 560;
+      else updatesize = 570;
       stl.setProperty('--chatresizer-sidebar-init-size', `${updatesize}px`);
       window.removeEventListener('mousemove', resize, false);
       window.removeEventListener('mouseup', stopResize, false);
